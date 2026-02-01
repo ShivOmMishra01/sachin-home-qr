@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate QR Code for Nitin Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .url-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed #3498db;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 1rem;
+            color: #2c3e50;
+        }
+
+        .qr-container {
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .qr-image {
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+        }
+
+        .download-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .download-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .instructions {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+            border-left: 4px solid #3498db;
+        }
+
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            color: #3498db;
+            margin: 20px 0;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Generate QR Code for Nitin Home</h1>
+        <p class="subtitle">Create a QR code that points directly to your home address website</p>
+
+        <div class="url-display">
+            https://shivommishra01.github.io/sachin-home-qr/
+        </div>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner"></i> Generating QR Code...
+        </div>
+
+        <div class="qr-container">
+            <!-- QR Code will be inserted here -->
+            <img id="qrImage" class="qr-image" src="" alt="QR Code for Nitin Home" style="display: none;">
+        </div>
+
+        <div id="successMessage" class="success-message"></div>
+
+        <button class="download-btn" id="downloadBtn" style="display: none;">
+            <i class="fas fa-download"></i> Download QR Code
+        </button>
+
+        <div class="instructions">
+            <h3><i class="fas fa-qrcode"></i> How to Use This QR Code</h3>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <strong>Download the QR Code</strong> by clicking the button above
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <strong>Print the QR Code</strong> in a visible size (at least 10x10 cm / 4x4 inches)
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <strong>Place it at strategic locations:</strong>
+                    <ul style="margin-top: 10px; margin-left: 15px;">
+                        <li>Main gate or entrance door</li>
+                        <li>Delivery area or package drop-off spot</li>
+                        <li>Near house number plate</li>
+                        <li>In your car (for emergency)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <strong>When scanned</strong>, the QR code will open your home address website with all contact
+                    details and exact location
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>QR Code generated for: Nitin Home, Plot No. 41, Ghuru Ka Purwa, Juggaur, Uttar Pradesh 226028</p>
+            <p>Scanning the QR code will open: https://shivommishra01.github.io/sachin-home-qr/</p>
+        </div>
+    </div>
+
+    <script>
+        // Your GitHub Pages URL
+        const websiteUrl = "https://shivommishra01.github.io/sachin-home-qr/";
+
+        // Using QRServer API
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(websiteUrl)}&format=png`;
+        const highQualityQRUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(websiteUrl)}&format=png`;
+
+        // Alternative APIs if the main one fails
+        const alternativeApis = [
+            `https://quickchart.io/qr?text=${encodeURIComponent(websiteUrl)}&size=300`,
+            `https://api.qr-code-generator.com/v1/create?access-token=DEMO_TOKEN&qr_code_text=${encodeURIComponent(websiteUrl)}&image_format=PNG&image_width=300`
+        ];
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const qrImage = document.getElementById('qrImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const loading = document.getElementById('loading');
+            const successMsg = document.getElementById('successMessage');
+
+            // Show loading
+            loading.classList.add('show');
+
+            // Try to load QR code
+            qrImage.onload = function () {
+                // Success! Hide loading, show QR code and download button
+                loading.classList.remove('show');
+                qrImage.style.display = 'block';
+                downloadBtn.style.display = 'inline-flex';
+
+                successMsg.textContent = 'QR Code generated successfully!';
+                successMsg.classList.add('show');
+
+                setTimeout(() => {
+                    successMsg.classList.remove('show');
+                }, 3000);
+            };
+
+            qrImage.onerror = function () {
+                // If first API fails, try alternatives
+                console.log('First API failed, trying alternative...');
+                qrImage.src = alternativeApis[0];
+
+                qrImage.onerror = function () {
+                    console.log('All APIs failed, showing download link only');
+                    loading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Could not generate preview. Click download to get QR code.';
+
+                    // Still show download button
+                    downloadBtn.style.display = 'inline-flex';
+                    qrImage.style.display = 'none';
+                };
+            };
+
+            // Set the initial source
+            qrImage.src = qrCodeUrl;
+
+            // Download QR Code
+            downloadBtn.addEventListener('click', function () {
+                const btn = this;
+                const originalHTML = btn.innerHTML;
+
+                // Show loading state
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+                btn.disabled = true;
+
+                // Create a temporary anchor element for download
+                const link = document.createElement('a');
+                link.href = highQualityQRUrl;
+                link.download = 'Nitin-Home-QR-Code.png';
+
+                // Append to body, click, and remove
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Show success message
+                successMsg.textContent = 'QR Code downloaded successfully! Check your downloads folder.';
+                successMsg.classList.add('show');
+
+                // Reset button
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }, 2000);
+
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    successMsg.classList.remove('show');
+                }, 5000);
+            });
+
+            // Allow right-click save on the QR image
+            qrImage.addEventListener('contextmenu', function (e) {
+                // Allow default right-click menu for "Save Image As"
+                return true;
+            });
+        });
+    </script>
+</body>
+
+</html>
