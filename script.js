@@ -1,15 +1,15 @@
 // script.js
-// Address data object (easy to edit later)
+// Address data object with EXACT coordinates
 const addressData = {
     house: "Nitin Home, Plot No. 41",
     street: "Ghuru Ka Purwa, Juggaur",
     city: "Lucknow, Uttar Pradesh 226028",
     landmark: "V3HC+VQ Juggaur, Uttar Pradesh",
     coordinates: {
-        lat: 26.8549,
-        lng: 80.9441
+        lat: 26.879797764976423,
+        lng: 81.07194023493491
     },
-    plusCode: "V3HC+VQ Juggaur, Uttar Pradesh",
+    plusCode: "V3HC+VQ",
     owner: {
         name: "Shambhu Nath Mishra",
         phone: "+919839417057"
@@ -18,7 +18,7 @@ const addressData = {
         name: "Hari Om Mishra",
         phone: "+918601017500"
     },
-    notes: "Located in Ghuru Ka Purwa area of Juggaur. Look for Plot No. 41. Near local landmarks and accessible from main road."
+    notes: "Welcome to Nitin Home! Located at Plot No. 41 in Ghuru Ka Purwa area of Juggaur. The house is easily accessible from the main road. For delivery, please use the exact coordinates provided above for precise navigation."
 };
 
 // Initialize page with address data
@@ -42,51 +42,70 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.emergency-btn').href = `tel:${addressData.emergency.phone}`;
 });
 
-// Open Google Maps function
-document.getElementById('openMapBtn').addEventListener('click', function () {
-    // Using the exact coordinates for Juggaur, Lucknow
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${addressData.coordinates.lat},${addressData.coordinates.lng}`;
-    window.open(mapsUrl, '_blank');
-});
-
 // Copy Address function
 document.getElementById('copyAddressBtn').addEventListener('click', function () {
-    const fullAddress = `Nitin Home, Plot No. 41, Ghuru Ka Purwa, Juggaur, Uttar Pradesh 226028. Plus Code: ${addressData.plusCode}`;
+    const fullAddress = `Nitin Home, Plot No. 41, Ghuru Ka Purwa, Juggaur, Uttar Pradesh 226028`;
 
+    copyToClipboard(fullAddress, 'copyNotification', 'Address copied to clipboard!');
+});
+
+// Copy Coordinates function
+document.getElementById('copyCoordinatesBtn').addEventListener('click', function () {
+    const coordinates = `${addressData.coordinates.lat}, ${addressData.coordinates.lng}`;
+
+    copyToClipboard(coordinates, 'coordinatesNotification', 'Coordinates copied to clipboard!');
+});
+
+// Google Maps Button - Using EXACT coordinates
+document.getElementById('googleMapsBtn').addEventListener('click', function () {
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${addressData.coordinates.lat},${addressData.coordinates.lng}`;
+
+    showNavigationNotification('Opening Google Maps with exact coordinates...');
+    setTimeout(() => {
+        window.open(mapsUrl, '_blank');
+    }, 300);
+});
+
+// WhatsApp Share Button
+document.getElementById('whatsappBtn').addEventListener('click', function () {
+    const message = encodeURIComponent(`Nitin Home Location\nPlot No. 41, Ghuru Ka Purwa, Juggaur, Uttar Pradesh 226028\n\nGoogle Maps: https://www.google.com/maps/search/?api=1&query=${addressData.coordinates.lat},${addressData.coordinates.lng}\n\nCoordinates: ${addressData.coordinates.lat}, ${addressData.coordinates.lng}`);
+    const whatsappUrl = `https://wa.me/?text=${message}`;
+
+    showNavigationNotification('Opening WhatsApp to share location...');
+    setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+    }, 300);
+});
+
+// Waze Navigation Button
+document.getElementById('wazeBtn').addEventListener('click', function () {
+    // Waze uses lat,lng format without spaces
+    const wazeUrl = `https://waze.com/ul?ll=${addressData.coordinates.lat},${addressData.coordinates.lng}&navigate=yes`;
+
+    showNavigationNotification('Opening Waze for navigation...');
+    setTimeout(() => {
+        window.open(wazeUrl, '_blank');
+    }, 300);
+});
+
+// Universal copy function
+function copyToClipboard(text, notificationId, message) {
     // Use the Clipboard API if available
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(fullAddress).then(() => {
-            showNotification('copyNotification');
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification(notificationId, message);
         }).catch(err => {
             console.error('Failed to copy: ', err);
-            copyFallback(fullAddress, 'copyNotification');
+            copyFallback(text, notificationId, message);
         });
     } else {
         // Fallback for older browsers
-        copyFallback(fullAddress, 'copyNotification');
+        copyFallback(text, notificationId, message);
     }
-});
-
-// Copy Plus Code function
-document.getElementById('plusCodeBtn').addEventListener('click', function () {
-    const plusCode = addressData.plusCode;
-
-    // Use the Clipboard API if available
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(plusCode).then(() => {
-            showNotification('plusCodeNotification');
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-            copyFallback(plusCode, 'plusCodeNotification');
-        });
-    } else {
-        // Fallback for older browsers
-        copyFallback(plusCode, 'plusCodeNotification');
-    }
-});
+}
 
 // Fallback copy method
-function copyFallback(text, notificationId) {
+function copyFallback(text, notificationId, message) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
     textArea.style.position = "fixed";
@@ -98,7 +117,7 @@ function copyFallback(text, notificationId) {
     try {
         const successful = document.execCommand('copy');
         if (successful) {
-            showNotification(notificationId);
+            showNotification(notificationId, message);
         }
     } catch (err) {
         console.error('Fallback copy failed: ', err);
@@ -108,14 +127,28 @@ function copyFallback(text, notificationId) {
     document.body.removeChild(textArea);
 }
 
-// Show notification
-function showNotification(notificationId) {
+// Show notification with custom message
+function showNotification(notificationId, message) {
     const notification = document.getElementById(notificationId);
+    if (message) {
+        notification.querySelector('span').textContent = message;
+    }
     notification.classList.add('show');
 
     setTimeout(() => {
         notification.classList.remove('show');
     }, 3000);
+}
+
+// Show navigation notification
+function showNavigationNotification(message) {
+    const notification = document.getElementById('navNotification');
+    document.getElementById('navMessage').textContent = message;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 2000);
 }
 
 // Future extensions placeholder functions
@@ -132,16 +165,31 @@ document.getElementById('languageLink').addEventListener('click', function (e) {
 // Generate QR code simulation
 function generateQRCode() {
     const currentUrl = window.location.href;
-    console.log(`QR Code would be generated for: ${currentUrl}`);
-    console.log(`Address: ${addressData.house}, ${addressData.street}, ${addressData.city}`);
+    console.log(`QR Code for: ${currentUrl}`);
+    console.log(`Exact Location: ${addressData.coordinates.lat}, ${addressData.coordinates.lng}`);
 }
 
 // Simulate QR code generation on page load
 window.addEventListener('load', generateQRCode);
 
-// Add geolocation feature for better accuracy
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-        console.log("User's location:", position.coords.latitude, position.coords.longitude);
-    });
+// Check if we're on a mobile device for better navigation
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Display coordinates in footer
+function displayCoordinates() {
+    const coordElement = document.querySelector('.coordinate-display span');
+    if (coordElement) {
+        coordElement.textContent = `${addressData.coordinates.lat.toFixed(7)}° N, ${addressData.coordinates.lng.toFixed(7)}° E`;
+    }
+}
+
+// Call on page load
+displayCoordinates();
+
+// Create a static map image URL (optional - if you want to add an actual map image)
+function getStaticMapUrl() {
+    return `https://maps.googleapis.com/maps/api/staticmap?center=${addressData.coordinates.lat},${addressData.coordinates.lng}&zoom=17&size=400x200&markers=color:red%7C${addressData.coordinates.lat},${addressData.coordinates.lng}&key=YOUR_API_KEY`;
+    // Note: You would need a Google Maps API key for this
 }
