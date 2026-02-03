@@ -2,7 +2,7 @@
 // Address data object with EXACT coordinates
 const addressData = {
     house: "Nitin Home, Plot No. 41",
-    street: "Ghuru Ka Purwa, Juggaur",
+    street: "Ghuru Ka Purwa, Uttar Dhauna",
     city: "Lucknow, Uttar Pradesh 226028",
     landmark: "V3HC+VQ Juggaur, Uttar Pradesh",
     coordinates: {
@@ -18,7 +18,7 @@ const addressData = {
         name: "Hari Om Mishra",
         phone: "+918601017500"
     },
-    notes: "Welcome to Nitin Home! Located at Plot No. 41 in Ghuru Ka Purwa area of Juggaur. The house is easily accessible from the main road. For delivery, please use the exact coordinates provided above for precise navigation."
+    notes: "Welcome to Nitin Home! Located at Plot No. 41 in Ghuru Ka Purwa, Uttar Dhauna. The house is easily accessible from the main road behind the BBD through CMS School. For delivery, please use the exact coordinates provided above for precise navigation."
 };
 
 // Initialize page with address data
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Copy Address function
 document.getElementById('copyAddressBtn').addEventListener('click', function () {
-    const fullAddress = `Nitin Home, Plot No. 41, Ghuru Ka Purwa, Juggaur, Uttar Pradesh 226028`;
+    const fullAddress = `Nitin Home, Plot No. 41, Ghuru Ka Purwa, Uttar Dhauna, Lucknow, Uttar Pradesh 226028`;
 
     copyToClipboard(fullAddress, 'copyNotification', 'Address copied to clipboard!');
 });
@@ -68,7 +68,7 @@ document.getElementById('googleMapsBtn').addEventListener('click', function () {
 
 // WhatsApp Share Button
 document.getElementById('whatsappBtn').addEventListener('click', function () {
-    const message = encodeURIComponent(`Nitin Home Location\nPlot No. 41, Ghuru Ka Purwa, Juggaur, Uttar Pradesh 226028\n\nGoogle Maps: https://www.google.com/maps/search/?api=1&query=${addressData.coordinates.lat},${addressData.coordinates.lng}\n\nCoordinates: ${addressData.coordinates.lat}, ${addressData.coordinates.lng}`);
+    const message = encodeURIComponent(`Nitin Home Location\nPlot No. 41, Ghuru Ka Purwa, Uttar Dhauna, Lucknow, Uttar Pradesh 226028\n\nRoute: Behind BBD through CMS School\n\nGoogle Maps: https://www.google.com/maps/search/?api=1&query=${addressData.coordinates.lat},${addressData.coordinates.lng}\n\nCoordinates: ${addressData.coordinates.lat}, ${addressData.coordinates.lng}`);
     const whatsappUrl = `https://wa.me/?text=${message}`;
 
     showNavigationNotification('Opening WhatsApp to share location...');
@@ -172,11 +172,6 @@ function generateQRCode() {
 // Simulate QR code generation on page load
 window.addEventListener('load', generateQRCode);
 
-// Check if we're on a mobile device for better navigation
-function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-
 // Display coordinates in footer
 function displayCoordinates() {
     const coordElement = document.querySelector('.coordinate-display span');
@@ -187,9 +182,3 @@ function displayCoordinates() {
 
 // Call on page load
 displayCoordinates();
-
-// Create a static map image URL (optional - if you want to add an actual map image)
-function getStaticMapUrl() {
-    return `https://maps.googleapis.com/maps/api/staticmap?center=${addressData.coordinates.lat},${addressData.coordinates.lng}&zoom=17&size=400x200&markers=color:red%7C${addressData.coordinates.lat},${addressData.coordinates.lng}&key=YOUR_API_KEY`;
-    // Note: You would need a Google Maps API key for this
-}
